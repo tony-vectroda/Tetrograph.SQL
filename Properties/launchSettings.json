@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Tetrograph.SQL": {
+      "commandName": "Project",
+      "commandLineArgs": "open D:\\a\\v9\\ENT\\METADATA_DB\\Security\\executeBeacon.sql"
+    }
+  }
+}
