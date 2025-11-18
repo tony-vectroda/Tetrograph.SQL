@@ -88,7 +88,7 @@ namespace Tetrograph.Sql
                                     break; 
                             }
                         else
-                            sql_exec = (string)obj + ";";
+                            sql_exec = (string)obj + ";";//
                     }
 
                 }
