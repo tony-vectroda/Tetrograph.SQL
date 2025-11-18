@@ -2,7 +2,7 @@
   "profiles": {
     "Tetrograph.SQL": {
       "commandName": "Project",
-      "commandLineArgs": "open D:\\a\\v9\\ENT\\METADATA_DB\\Security\\executeBeacon.sql"
+      "commandLineArgs": "open \"A:\\CWSS\\spajica\\sprint4\\sql\\dbo\\Stored Procedures\\WorkEffort\\Work_Effort_Status_Change.sql\""
     }
   }
 }

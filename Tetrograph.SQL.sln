@@ -1,20 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36705.20 d17.14
+VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tetrograph.SQL", "Tetrograph.SQL.csproj", "{3DBDA1A0-57D2-1F3D-B8C2-663119423287}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CWSS_SQL", "A:\CWSS\spajica\sprint4\sql\CWSS_SQL.sqlproj", "{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CWSS", "A:\CWSS\spajica\sprint4\server\CWSS.csproj", "{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		UAT|Any CPU = UAT|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.UAT|Any CPU.ActiveCfg = Release|Any CPU
+		{3DBDA1A0-57D2-1F3D-B8C2-663119423287}.UAT|Any CPU.Build.0 = Release|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.UAT|Any CPU.ActiveCfg = UAT|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.UAT|Any CPU.Build.0 = UAT|Any CPU
+		{B7419A91-F5B1-46C0-9A71-8134E77AD3DC}.UAT|Any CPU.Deploy.0 = UAT|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.UAT|Any CPU.ActiveCfg = UAT|Any CPU
+		{18AF16A8-9960-4F5D-BB1B-5CE7FE4242E9}.UAT|Any CPU.Build.0 = UAT|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

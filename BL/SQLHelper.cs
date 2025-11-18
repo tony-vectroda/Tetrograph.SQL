@@ -15,29 +15,32 @@ namespace Tetrograph.Sql
             FileInfo fi = new FileInfo(originalFile);
             string object_name = fi.Name.Remove(fi.Name.Length - fi.Extension.Length);
             const string sql = @"select type from sys.objects where name = @object_name";
-            string drop_code=null;
+            string drop_code = null;
             string object_type;
             string sql_exec = null;
             Console.WriteLine(object_name);
-            string filePath = fi.DirectoryName + @"\_" + object_name+".sql";//.Trim('"').Replace(".sql", ".ttg");
-            bool save_file=false;
+            string filePath = fi.DirectoryName + @"\_" + object_name + ".sql";//.Trim('"').Replace(".sql", ".ttg");
+            bool save_file = false;
             using (var cn = new Cn(Startup.Settings.ConnectionString[Startup.Settings.CurrentConnection]))
             {
                 cn.Open();
                 using (var cmd = new Cmd(sql, cn))
                 {
-                    cmd.CommandType=System.Data.CommandType.Text;
+                    cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@object_name", object_name);
                     object_type = ((string)cmd.ExecuteScalar()).TrimEnd();
                 }
-                string keyword=null;
-                switch(object_type )
+                string keyword = null;
+                switch (object_type)
                 {
                     case "P":
                         keyword = "PROCEDURE";
                         break;
                     case "FN":
-                        keyword = "FUNCTION"  ;
+                        keyword = "FUNCTION";
+                        break;
+                    case "V":
+                        keyword = "VIEW";
                         break;
                 }
                 drop_code = $"if  exists(select * from  sys.objects where name ='{object_name}' and type='{object_type}') DROP {keyword} {object_name};";
@@ -47,14 +50,14 @@ namespace Tetrograph.Sql
                     cmd.ExecuteNonQuery();
                 }
 
-                string create_object=File.ReadAllText(originalFile);
+                string create_object = File.ReadAllText(originalFile);
 
                 using (var cmd = new Cmd(create_object, cn))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.ExecuteNonQuery();
                 }
-              
+
                 save_file = !File.Exists(filePath);
                 if (!save_file)
                     save_file = File.ReadAllText(filePath).Length == 0;
@@ -67,14 +70,29 @@ namespace Tetrograph.Sql
                     //Console.WriteLine(par_names);
                     using (var cmd = new Cmd(Startup.Settings.ParametersSQL, cn))
                     {
-                         
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.Parameters.AddWithValue("@object_name", object_name);
-                       sql_exec=(string)cmd.ExecuteScalar()+";";
+                        object obj = cmd.ExecuteScalar();
+                        if (obj is DBNull)
+                            switch (object_type)
+                            {
+                                case "V":
+                                    sql_exec = $"Select top 10 * from {object_name};";
+                                    break;
+
+                                case "P":
+                                    keyword = $"Exec dbo.{object_name};";
+                                    break;
+                                case "FN":
+                                    keyword = $"Select dbo.{object_name}();";
+                                    break; 
+                            }
+                        else
+                            sql_exec = (string)obj + ";";
                     }
 
                 }
-                    cn.Close();
+                cn.Close();
             }
 
 
@@ -83,24 +101,24 @@ namespace Tetrograph.Sql
 
          ;
 
-        
 
-            if (Startup.Settings.formatter.Length>1)
+
+            if (Startup.Settings.formatter.Length > 1)
             {
-           
-                var psif = new ProcessStartInfo 
+
+                var psif = new ProcessStartInfo
                 {
                     FileName = Startup.Settings.formatter,
                     Arguments = originalFile,
                     WorkingDirectory = Path.GetDirectoryName(Startup.Settings.formatter),
-                    UseShellExecute =false
+                    UseShellExecute = false
                 };
                 Process.Start(psif);
 
             }
-           
 
-         
+
+
 
             if (save_file)
             {
@@ -110,13 +128,25 @@ namespace Tetrograph.Sql
                    sql_exec;
                 File.WriteAllText(filePath, content);
             }
-
+            if (false)
+            {
+                var psi = new ProcessStartInfo();
+                psi.FileName = @"C:\Program Files (x86)\Microsoft SQL Server Management Studio 19\Common7\IDE\Ssms.exe";
+                psi.WorkingDirectory = "C:\\Program Files (x86)\\Microsoft SQL Server Management Studio 19\\Common7\\IDE\\";
+                psi.Arguments = $"-nosplash \"{filePath}\"";
+                psi.UseShellExecute = true;
+                Process.Start(psi);
+            }
+            //   else
+            //   Clipboard.SetText(filePath);
+            /*
             var psi = new ProcessStartInfo(filePath)
             {
                 UseShellExecute = true
             };
 
             Process.Start(psi);
+            */
         }
     }
 }
