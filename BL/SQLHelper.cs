@@ -9,8 +9,88 @@ namespace Tetrograph.Sql
     internal static class SQLHelper
     {
 
+        internal static void  OpenTestScript(string originalFile)
+        {
+            FileInfo fi = new FileInfo(originalFile);
+            string object_name = fi.Name.Remove(fi.Name.Length - fi.Extension.Length);
+            const string sql = @"select type from sys.objects where name = @object_name";
+            string drop_code = null;
+            string object_type;
+            string sql_exec = null;
+            Console.WriteLine(object_name);
+            string filePath = fi.DirectoryName + @"\_" + object_name + ".sql";//.Trim('"').Replace(".sql", ".ttg");
+            bool save_file = false;
+            using (var cn = new Cn(Startup.Settings.ConnectionString[Startup.Settings.CurrentConnection]))
+            {
+                cn.Open();
+                using (var cmd = new Cmd(sql, cn))
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@object_name", object_name);
+                    object_type = ((string)cmd.ExecuteScalar()).TrimEnd();
+                }
+                string keyword = null;
+                switch (object_type)
+                {
+                    case "P":
+                        keyword = "PROCEDURE";
+                        break;
+                    case "FN":
+                        keyword = "FUNCTION";
+                        break;
+                    case "V":
+                        keyword = "VIEW";
+                        break;
+                }
+                save_file = !File.Exists(filePath);
+                if (!save_file)
+                    save_file = File.ReadAllText(filePath).Length == 0;
 
-        internal static void OpenTestScript(string originalFile)
+                Console.WriteLine(save_file.ToString()+"-"+filePath );
+
+                if (save_file)
+                {               
+                    using (var cmd = new Cmd(Startup.Settings.ParametersSQL, cn))
+                    {
+                        cmd.CommandType = System.Data.CommandType.Text;
+                        cmd.Parameters.AddWithValue("@object_name", object_name);
+                        object obj = cmd.ExecuteScalar();
+                        if (obj is DBNull)
+                            switch (object_type)
+                            {
+                                case "V":
+                                    sql_exec = $"Select top 10 * from {object_name};";
+                                    break;
+
+                                case "P":
+                                    keyword = $"Exec dbo.{object_name};";
+                                    break;
+                                case "FN":
+                                    keyword = $"Select dbo.{object_name}();";
+                                    break;
+                            }
+                        else
+                            sql_exec = (string)obj + ";";//
+                    }
+                    File.WriteAllText(filePath, sql_exec);
+
+                }
+                cn.Close();
+            }          ;
+          
+            var psi = new ProcessStartInfo(filePath)
+            {
+                WorkingDirectory = Path.GetDirectoryName(originalFile),
+                UseShellExecute = true
+            };
+
+            Process.Start(psi);
+
+
+       
+
+        }
+        internal static void UpdateProc(string originalFile)
         {
             FileInfo fi = new FileInfo(originalFile);
             string object_name = fi.Name.Remove(fi.Name.Length - fi.Extension.Length);
@@ -117,9 +197,20 @@ namespace Tetrograph.Sql
 
             }
 
+            if (Startup.Settings.formatter.Length > 1)
+            {
+
+                var psif = new ProcessStartInfo
+                {
+                    FileName = Startup.Settings.formatter,
+                    Arguments = originalFile,
+                    WorkingDirectory = Path.GetDirectoryName(Startup.Settings.formatter),
+                    UseShellExecute = false
+                };
+                Process.Start(psif);
 
 
-
+            
             if (save_file)
             {
                 string content = $"/*{Environment.NewLine}--------------------------------------------------------------------- {Environment.NewLine}Testing script of {object_name} created{Environment.NewLine}at:{DateTime.Now.ToString()}{Environment.NewLine}" +
@@ -137,6 +228,7 @@ namespace Tetrograph.Sql
                 psi.UseShellExecute = true;
                 Process.Start(psi);
             }
+          
             //   else
             //   Clipboard.SetText(filePath);
             /*

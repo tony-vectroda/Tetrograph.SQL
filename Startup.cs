@@ -27,8 +27,17 @@ namespace Tetrograph.Sql
                     Console.WriteLine($"Unknown command: {cmd}");
                     return 2;
                 }
+                switch(cmd)
+                {
+                    case "open":
+                        SQLHelper.OpenTestScript(args[1]);
+                        break;
 
-              SQLHelper.OpenTestScript(args[1]);
+                    case "update":
+                        SQLHelper.UpdateProc(args[1]);
+                        break;
+                }
+ 
                 Console.WriteLine("OK");    
                 return 0;
             }
