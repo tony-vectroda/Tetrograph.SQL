@@ -2,7 +2,7 @@
   "CurrentConnection": 0,
   "Author": "spajica",
   "ConnectionString": [ "Server=3.9.2.46;Integrated Security=true;Initial Catalog=CWSS_dev;Persist Security Info=False;Column Encryption Setting=enabled;Encrypt=False;" ],
-  "formatter": "C:\\sql_formatter\\SqlFormatter.exe",
+  "formatter": "C:\sql_formatter\SqlFormatter.exe",
   "ParametersSQL": "DECLARE @res VARCHAR(MAX); SELECT @res='Declare '+CHAR(13)+STRING_AGG(pr.name+' '+CASE WHEN t.name IN('varchar','nvarchar','char','nchar','binary','varbinary') THEN t.name+'('+CASE WHEN pr.max_length=-1 THEN 'MAX' WHEN t.name LIKE 'n%' THEN CAST(pr.max_length/2 AS VARCHAR(10)) ELSE CAST(pr.max_length AS VARCHAR(10)) END+')' WHEN t.name IN('decimal','numeric') THEN t.name+'('+CAST(pr.precision AS VARCHAR(10))+','+CAST(pr.scale AS VARCHAR(10))+')' ELSE t.name END+'='+CASE WHEN t.name IN('varchar','nvarchar','char','nchar') THEN '''2''' ELSE '2' END,','+CHAR(13))+CHAR(13)+CHAR(13)+'exec dbo.'+@object_name+' '+CHAR(13)+STRING_AGG(pr.name,','+CHAR(13)) FROM sys.objects o INNER JOIN sys.parameters pr ON o.object_id=pr.object_id INNER JOIN sys.types t ON pr.user_type_id=t.user_type_id WHERE o.type IN('P','FN','IF','TF') AND o.name=@object_name; SELECT @res;",
   "Extensions": {
     "Input": ".sql",

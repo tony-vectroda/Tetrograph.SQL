@@ -12,7 +12,6 @@ namespace Tetrograph.Sql
         public static int Main(string[] args)
         { 
             Settings = AppSettings.Load();
-            Console.WriteLine("Usage: Tetrograph.Sql open <filePath>, alter  <filePath>");
             try
             {
                 if (args.Length < 2)
@@ -20,25 +19,19 @@ namespace Tetrograph.Sql
                     Console.WriteLine("Usage: Tetrograph.Sql open <filePath>, alter  <filePath>");
                     return 1;
                 }
-
-                string cmd = args[0];
-
-                if (!string.Equals(cmd, "open", StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine($"Unknown command: {cmd}");
-                    return 2;
-                }
+                string cmd = args[0];              
                 switch(cmd)
                 {
                     case "open":
                         SQLHelper.OpenTestScript(args[1]);
                         break;
-
                     case "alter":
                         SQLHelper.UpdateProc(args[1]);
                         break;
-                }
- 
+                    case "th":
+                        SQLHelper.TH(args[1]);
+                        break;
+                } 
                 Console.WriteLine("OK");    
                 return 0;
             }
@@ -49,5 +42,4 @@ namespace Tetrograph.Sql
             }
         }
     }
-
 }
