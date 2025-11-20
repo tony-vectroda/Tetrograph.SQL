@@ -9,7 +9,7 @@ namespace Tetrograph.Sql
     internal static class SQLHelper
     {
 
-        internal static void  OpenTestScript(string originalFile)
+        internal static void OpenTestScript(string originalFile)
         {
             FileInfo fi = new FileInfo(originalFile);
             string object_name = fi.Name.Remove(fi.Name.Length - fi.Extension.Length);
@@ -46,10 +46,10 @@ namespace Tetrograph.Sql
                 if (!save_file)
                     save_file = File.ReadAllText(filePath).Length == 0;
 
-                Console.WriteLine(save_file.ToString()+"-"+filePath );
+                Console.WriteLine(save_file.ToString() + "-" + filePath);
 
                 if (save_file)
-                {               
+                {
                     using (var cmd = new Cmd(Startup.Settings.ParametersSQL, cn))
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
@@ -76,8 +76,9 @@ namespace Tetrograph.Sql
 
                 }
                 cn.Close();
-            }          ;
-          
+            }
+            ;
+
             var psi = new ProcessStartInfo(filePath)
             {
                 WorkingDirectory = Path.GetDirectoryName(originalFile),
@@ -87,7 +88,7 @@ namespace Tetrograph.Sql
             Process.Start(psi);
 
 
-       
+
 
         }
         internal static void UpdateProc(string originalFile)
@@ -165,7 +166,7 @@ namespace Tetrograph.Sql
                                     break;
                                 case "FN":
                                     keyword = $"Select dbo.{object_name}();";
-                                    break; 
+                                    break;
                             }
                         else
                             sql_exec = (string)obj + ";";//
@@ -210,35 +211,36 @@ namespace Tetrograph.Sql
                 Process.Start(psif);
 
 
-            
-            if (save_file)
-            {
-                string content = $"/*{Environment.NewLine}--------------------------------------------------------------------- {Environment.NewLine}Testing script of {object_name} created{Environment.NewLine}at:{DateTime.Now.ToString()}{Environment.NewLine}" +
-                    $"Author:{Startup.Settings.Author}{Environment.NewLine}" +
-                    $"---------------------------------------------------------------------{Environment.NewLine}*/" + Environment.NewLine +
-                   sql_exec;
-                File.WriteAllText(filePath, content);
-            }
-            if (false)
-            {
-                var psi = new ProcessStartInfo();
-                psi.FileName = @"C:\Program Files (x86)\Microsoft SQL Server Management Studio 19\Common7\IDE\Ssms.exe";
-                psi.WorkingDirectory = "C:\\Program Files (x86)\\Microsoft SQL Server Management Studio 19\\Common7\\IDE\\";
-                psi.Arguments = $"-nosplash \"{filePath}\"";
-                psi.UseShellExecute = true;
-                Process.Start(psi);
-            }
-          
-            //   else
-            //   Clipboard.SetText(filePath);
-            /*
-            var psi = new ProcessStartInfo(filePath)
-            {
-                UseShellExecute = true
-            };
 
-            Process.Start(psi);
-            */
+                if (save_file)
+                {
+                    string content = $"/*{Environment.NewLine}--------------------------------------------------------------------- {Environment.NewLine}Testing script of {object_name} created{Environment.NewLine}at:{DateTime.Now.ToString()}{Environment.NewLine}" +
+                        $"Author:{Startup.Settings.Author}{Environment.NewLine}" +
+                        $"---------------------------------------------------------------------{Environment.NewLine}*/" + Environment.NewLine +
+                       sql_exec;
+                    File.WriteAllText(filePath, content);
+                }
+                if (false)
+                {
+                    var psi = new ProcessStartInfo();
+                    psi.FileName = @"C:\Program Files (x86)\Microsoft SQL Server Management Studio 19\Common7\IDE\Ssms.exe";
+                    psi.WorkingDirectory = "C:\\Program Files (x86)\\Microsoft SQL Server Management Studio 19\\Common7\\IDE\\";
+                    psi.Arguments = $"-nosplash \"{filePath}\"";
+                    psi.UseShellExecute = true;
+                    Process.Start(psi);
+                }
+
+                //   else
+                //   Clipboard.SetText(filePath);
+                /*
+                var psi = new ProcessStartInfo(filePath)
+                {
+                    UseShellExecute = true
+                };
+
+                Process.Start(psi);
+                */
+            }
         }
     }
-}
+}//fixed 20/11
