@@ -32,7 +32,9 @@ namespace Tetrograph.Sql
         public string[] ConnectionString { get; set; } = [];
         public string formatter { get; set; } = "D:\\install\\CONSOLE_TOOLS\\SqlFormatter.1.6.10\\SqlFormatter.exe";
         public string ParametersSQL { get; set; }
-        public string  HistoryFolder { get; set; }   
+        public string  HistoryFolder { get; set; }
+
+        public string[] Ext { get; set; } = [];
 
     }
 

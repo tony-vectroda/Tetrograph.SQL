@@ -31,6 +31,12 @@ namespace Tetrograph.Sql
                     case "th":
                         SQLHelper.TH(args[1]);
                         break;
+                    case "gen_open":
+                        SQLHelper.gen_open(args[1]);
+                        break;
+                    case "import_fs":
+                        SQLHelper.import_fs(args[1]);
+                        break;
                 } 
                 Console.WriteLine("OK");    
                 return 0;

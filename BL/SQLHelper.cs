@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Diagnostics;
 using System.Security.AccessControl;
 using System.Text.Json;
@@ -10,6 +11,68 @@ namespace Tetrograph.Sql
     internal static class SQLHelper
     {
         //table history
+
+
+        internal static void import_fs(string folder)
+        {
+            var ext = Startup.Settings.Ext;
+            using var cn = new Cn(Startup.Settings.ConnectionString[Startup.Settings.CurrentConnection]);
+            cn.Open();
+
+            using var cmd = new Cmd("fs2Tetrograph", cn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            cmd.Parameters.Add("@folder", SqlDbType.NVarChar, 500);
+            cmd.Parameters.Add("@name", SqlDbType.NVarChar, 256);
+            cmd.Parameters.Add("@ext", SqlDbType.NVarChar, 10);
+            cmd.Parameters.Add("@tga_tga", SqlDbType.Int);
+            cmd.Parameters.Add("@tga_tga_a", SqlDbType.Int);
+            int rootId = InsertAndGetId(cmd, folder, "folder", "folder", null,null);
+            TraverseFolder(folder, folder, rootId, cmd, ext,rootId);
+        }
+
+        static void TraverseFolder(string root, string current, int parentId, Cmd cmd, IEnumerable<string> ext, int? root_id)
+        {
+            foreach (var file in Directory.GetFiles(current))
+            {
+                if (!ext.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase))
+                    continue;
+
+                string parentRel = Path.GetRelativePath(root, Path.GetDirectoryName(file)!);
+                InsertAndGetId(cmd, parentRel,
+                               Path.GetFileNameWithoutExtension(file),
+                               Path.GetExtension(file),
+                               parentId, root_id);
+            }
+
+            foreach (var dir in Directory.GetDirectories(current))
+            {
+                string dirRel = Path.GetRelativePath(root, dir);
+                int dirId = InsertAndGetId(cmd, dirRel,
+                                           Path.GetFileName(dir),
+                                           "folder",
+                                           parentId,root_id);
+
+                TraverseFolder(root, dir, dirId, cmd, ext, root_id);
+            }
+        }
+
+        static int InsertAndGetId(Cmd cmd, string folder, string name, string ext, int? parent, int? root_id)
+        {
+            cmd.Parameters["@folder"].Value = folder;
+            cmd.Parameters["@name"].Value = name;
+            cmd.Parameters["@ext"].Value = ext;
+            cmd.Parameters["@tga_tga"].Value = parent.HasValue ? parent.Value : DBNull.Value;
+            cmd.Parameters["@tga_tga_a"].Value = root_id.HasValue ? root_id.Value : DBNull.Value;
+            return (int)cmd.ExecuteScalar();
+        }
+
+
+        internal static void gen_open(string originalFile)
+        {
+            
+        }
         internal static void TH(string originalFile)
         {
             string obj_name = getObjectName(originalFile);

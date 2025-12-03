@@ -2,7 +2,7 @@
   "profiles": {
     "Tetrograph.SQL": {
       "commandName": "Project",
-      "commandLineArgs": "open \"A:\\CWSS\\spajica\\sprint4\\sql\\dbo\\Stored Procedures\\WorkEffort\\Work_Effort_Status_Change.sql\""
+      "commandLineArgs": "import_fs D:\\poc\\tnav"
     }
   }
 }
